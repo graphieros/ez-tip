@@ -1,0 +1,171 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --tooltip-arrow-size: 6px;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.vanilla:hover {
+  filter: drop-shadow(0 0 2em #3178c6aa);
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+p {
+  background: #FFFFFF10;
+  padding: 1rem;
+}
+
+/* Example styles for ez-tip */
+
+.ez-tip {
+  background-color: var(--ez-tooltip-background-color);
+  color: var(--ez-tooltip-color);
+  padding: var(--ez-tooltip-padding);
+  border-radius: var(--ez-tooltip-border-radius);
+}
+
+
+.ez-tip {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.ez-tip.ez-tip-visible {
+  opacity: 1;
+}
+
+.ez-tip::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* ─── TOP placement ───
+  Tooltip sits above the element,
+  arrow on the bottom edge pointing DOWN toward the element */
+.ez-tip[data-position="top"]::after {
+  bottom: calc(-1 * var(--tooltip-arrow-size));
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: var(--tooltip-arrow-size) var(--tooltip-arrow-size) 0 var(--tooltip-arrow-size);
+  border-color: var(--ez-tooltip-background-color) transparent transparent transparent;
+}
+/* ─── BOTTOM placement ───
+  Tooltip sits below the element,
+  arrow on the top edge pointing UP toward the element */
+.ez-tip[data-position="bottom"]::after {
+  top: calc(-1 * var(--tooltip-arrow-size));
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 var(--tooltip-arrow-size) var(--tooltip-arrow-size) var(--tooltip-arrow-size);
+  border-color: transparent transparent var(--ez-tooltip-background-color) transparent;
+}
+/* ─── LEFT placement ───
+  Tooltip sits to the left of the element,
+  arrow on the right edge pointing RIGHT toward the element */
+.ez-tip[data-position="left"]::after {
+  right: calc(-1 * var(--tooltip-arrow-size));
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: var(--tooltip-arrow-size) 0 var(--tooltip-arrow-size) var(--tooltip-arrow-size);
+  border-color: transparent transparent transparent var(--ez-tooltip-background-color);
+}
+/* ─── RIGHT placement ───
+  Tooltip sits to the right of the element,
+  arrow on the left edge pointing LEFT toward the element */
+.ez-tip[data-position="right"]::after {
+  left: calc(-1 * var(--tooltip-arrow-size));
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: var(--tooltip-arrow-size) var(--tooltip-arrow-size) var(--tooltip-arrow-size) 0;
+  border-color: transparent var(--ez-tooltip-background-color) transparent transparent;
+}

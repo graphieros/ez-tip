@@ -1,0 +1,48 @@
+{
+  "name": "ez-tip",
+  "homepage": "https://ez-tip.graphieros.com/",
+  "private": false,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "A lightweight, zero-dependency JavaScript tooltip library that uses CSS custom properties for full styling flexibility. Tooltips can be triggered on hover or displayed permanently, with configurable delay, offset, and positioning.",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "tooltip",
+    "javascript",
+    "css-variables",
+    "vanilla-js",
+    "positioning",
+    "delay",
+    "hover",
+    "responsive",
+    "zero-dependencies",
+    "ui-component"
+  ],
+  "author": "Alec Lloyd Probert",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphieros/ez-tip.git"
+  },
+  "main": "dist/ez-tip.umd.cjs",
+  "module": "dist/ez-tip.js",
+  "exports": {
+    ".": {
+      "import": "./dist/ez-tip.js",
+      "require": "./dist/ez-tip.umd.cjs"
+    }
+  },
+  "devDependencies": {
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1",
+    "vite-plugin-dts": "^4.5.3"
+  }
+}
