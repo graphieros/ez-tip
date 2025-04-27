@@ -167,12 +167,16 @@ config.borderRadius = "5px";
 
 ## Data Attributes
 
-| Attribute              | Type                          | Default     | Description                                                                        |
-| ---------------------- | ----------------------------- | ----------- | ---------------------------------------------------------------------------------- |
-| `data-ez-tip`          | string                        | **—**       | **Required.** HTML content or text for the tooltip.                                |
-| `data-ez-tip-hover`    | `true` or `false`             | `true`      | If `false`, tooltip is always visible; if `true` (or absent), shows on hover only. |
-| `data-ez-tip-delay`    | number (ms)                   | `0`         | Milliseconds to wait after hover before showing the tooltip.                       |
-| `data-ez-tip-position` | `top`,`bottom`,`left`,`right` | `undefined` | Preferred placement; library will auto-fallback to best-fit if it doesn’t fit.     |
+| Attribute                   | Type                          | Default | Description                                                                        |
+| --------------------------- | ----------------------------- | ------- | ---------------------------------------------------------------------------------- |
+| `data-ez-tip`               | string                        | **—**   | **Required.** HTML content or text for the tooltip.                                |
+| `data-ez-tip-hover`         | `true` or `false`             | `true`  | If `false`, tooltip is always visible; if `true` (or absent), shows on hover only. |
+| `data-ez-tip-delay`         | number (ms)                   | `0`     | Milliseconds to wait after hover before showing the tooltip.                       |
+| `data-ez-tip-position`      | `top`,`bottom`,`left`,`right` |         | Preferred placement; library will auto-fallback to best-fit if it doesn’t fit.     |
+| `data-ez-tip-background`    | string                        |         | Force background color for a single tooltip                                        |
+| `data-ez-tip-color`         | string                        |         | Force text color for a single tooltip                                              |
+| `data-ez-tip-padding`       | string                        |         | Force padding for a single tooltip                                                 |
+| `data-ez-tip-border-radius` | string                        |         | Force border-radius for a single tooltip                                           |
 
 ```html
 <button

@@ -22,7 +22,7 @@ export const config = {
     borderRadius: '3px'
 };
 
-export function render({ delay = 0} : EzTipOptions = {}) {
+export function render({ delay = 0 }: EzTipOptions = {}) {
     window.addEventListener('DOMContentLoaded', () => onRender({ delay }))
 }
 
@@ -42,6 +42,8 @@ function onRender({
         const content = target.dataset.ezTip;
         if (!content) return;
 
+        let escHandler: (e: KeyboardEvent) => void;
+
         const isHover = target.dataset.ezTipHover !== 'false';
 
         const individualDelay = parseInt(target.dataset.ezTipDelay ?? '0', 10) || 0;
@@ -52,29 +54,70 @@ function onRender({
         tooltip.style.position = 'fixed';
         tooltip.style.pointerEvents = 'none';
 
+        if (target.dataset.ezTipBackground) {
+            tooltip.style.backgroundColor = target.dataset.ezTipBackground;
+        }
+
+        if (target.dataset.ezTipColor) {
+            tooltip.style.color = target.dataset.ezTipColor;
+        }
+
+        if (target.dataset.ezTipPadding) {
+            tooltip.style.padding = target.dataset.ezTipPadding;
+        }
+
+        if (target.dataset.ezTipBorderRadius) {
+            tooltip.style.borderRadius = target.dataset.ezTipBorderRadius;
+        }
+
+        const uid = createUid();
+        tooltip.setAttribute('id', uid);
+        tooltip.setAttribute('role', 'tooltip');
+        tooltip.setAttribute('aria-live', 'polite');
+        target.setAttribute('aria-describedby', uid);
+
         tooltip.innerHTML = content;
         document.body.appendChild(tooltip);
 
         positionTooltip(target, tooltip);
 
+        function showTooltip() {
+            positionTooltip(target, tooltip);
+
+            showTimeout = setTimeout(() => {
+                tooltip.classList.add('ez-tip-visible');
+                tooltip.setAttribute('aria-hidden', 'false');
+
+                escHandler = (e: KeyboardEvent) => {
+                    if (e.key === 'Escape') {
+                        hideTooltip();
+                    }
+                };
+                document.addEventListener('keydown', escHandler);
+            }, individualDelay);
+        }
+
+        function hideTooltip() {
+            if (showTimeout !== null) {
+                clearTimeout(showTimeout);
+                showTimeout = null;
+            }
+            tooltip.classList.remove('ez-tip-visible');
+            tooltip.setAttribute('aria-hidden', 'true');
+
+            if (escHandler) {
+                document.removeEventListener('keydown', escHandler);
+            }
+        }
+
+
         if (isHover) {
             tooltip.classList.remove('ez-tip-visible');
+            target.addEventListener('mouseenter', showTooltip);
+            target.addEventListener('focus', showTooltip);
+            target.addEventListener('mouseleave', hideTooltip);
+            target.addEventListener('blur', hideTooltip);
 
-            target.addEventListener('mouseenter', () => {
-                positionTooltip(target, tooltip);
-
-                showTimeout = setTimeout(() => {
-                    tooltip.classList.add('ez-tip-visible');
-                }, individualDelay);
-
-            });
-            target.addEventListener('mouseleave', () => {
-                if (showTimeout !== null) {
-                    clearTimeout(showTimeout);
-                    showTimeout = null;
-                }
-                tooltip.classList.remove('ez-tip-visible');
-            });
         } else {
             tooltip.classList.add('ez-tip-visible');
         }
@@ -230,4 +273,13 @@ function debounce<F extends (...args: any[]) => void>(fn: F, wait = 100): F {
             timeoutId = null;
         }, wait);
     } as F;
+}
+
+function createUid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+        .replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
 }

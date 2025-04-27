@@ -19,6 +19,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         data-ez-tip-delay="500" 
         data-ez-tip="<div>click <b>here</b></div>"
         data-ez-tip-offset="8"
+        data-ez-tip-background="#CCCCCC"
+        data-ez-tip-border-radius="40px"
+        data-ez-tip-padding="1rem"
       >
         with a delay
       </button>
