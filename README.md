@@ -1,5 +1,10 @@
 # ez-tip
 
+[![npm](https://img.shields.io/npm/v/ez-tip)](https://github.com/graphieros/ez-tip)
+[![GitHub issues](https://img.shields.io/github/issues/graphieros/ez-tip)](https://github.com/graphieros/ez-tip/issues)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/graphieros/ez-tip?tab=MIT-1-ov-file#readme)
+[![npm](https://img.shields.io/npm/dt/ez-tip)](https://github.com/graphieros/ez-tip)
+
 A lightweight, zero-dependency JavaScript tooltip library that uses CSS custom properties for full styling flexibility. Tooltips can be triggered on hover or displayed permanently, with configurable delay, offset, and positioning.
 
 ## Features
