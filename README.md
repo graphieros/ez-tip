@@ -7,6 +7,8 @@
 
 A lightweight, zero-dependency JavaScript tooltip library that uses CSS custom properties for full styling flexibility. Tooltips can be triggered on hover or displayed permanently, with configurable delay, offset, and positioning.
 
+[DEMO](https://ez-tip.graphieros.com)
+
 ## Features
 
 - **Easy to integrate:** Just import the JS and call `render()`
