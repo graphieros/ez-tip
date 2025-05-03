@@ -183,8 +183,22 @@ function positionTooltip(
     const gap = Number(target.dataset.ezTipOffset || 8);
 
     const { width: tw, height: th } = tooltip.getBoundingClientRect();
-    const { top: et, left: el, width: ew, height: eh } =
-        target.getBoundingClientRect();
+    const {
+        top: et,
+        left: el,
+        width: ew,
+        height: eh
+    } = target.getBoundingClientRect();
+
+    const fullWidth = ew >= window.innerWidth;
+    const fullHeight = eh >= window.innerHeight;
+    const isHover = target.dataset.ezTipHover !== 'false';
+
+    const isVisible =
+        et + eh > 0 &&
+        et < window.innerHeight &&
+        el + ew > 0 &&
+        el < window.innerWidth;
 
     for (const pos of candidates) {
         let anchorX: number, anchorY: number;
@@ -213,30 +227,47 @@ function positionTooltip(
                 break;
         }
 
-        tooltip.setAttribute('data-position', pos ?? 'top')
+        tooltip.setAttribute('data-position', pos);
 
         const finalLeft = anchorX + (tx / 100) * tw;
         const finalTop = anchorY + (ty / 100) * th;
         const fitsH = finalLeft >= 0 && finalLeft + tw <= window.innerWidth;
         const fitsV = finalTop >= 0 && finalTop + th <= window.innerHeight;
 
-        if (fitsH && fitsV) {
-            tooltip.style.left = `${anchorX}px`;
-            tooltip.style.top = `${anchorY}px`;
-            tooltip.style.transform = `translate(${tx}%, ${ty}%)`;
+        const allowOverflowFix =
+            pos === pref &&
+            ((['top', 'bottom'].includes(pos) && fullWidth) ||
+                (['left', 'right'].includes(pos) && fullHeight));
+
+        if ((fitsH && fitsV) || allowOverflowFix) {
+            if (isHover || isVisible) {
+                // clamp within viewport
+                const clampedLeft = Math.min(Math.max(finalLeft, 0), window.innerWidth - tw);
+                const clampedTop = Math.min(Math.max(finalTop, 0), window.innerHeight - th);
+                tooltip.style.left = `${clampedLeft}px`;
+                tooltip.style.top = `${clampedTop}px`;
+                tooltip.style.transform = `translate(0,0)`;
+            } else {
+                // always-visible & off-screen: no clamping
+                tooltip.style.left = `${anchorX}px`;
+                tooltip.style.top = `${anchorY}px`;
+                tooltip.style.transform = `translate(${tx}%, ${ty}%)`;
+            }
             return;
         }
     }
 
+    // fallback: preferred position
     const fb = pref ?? 'top';
     let anchorX: number, anchorY: number;
     let tx = 0, ty = 0;
 
-    tooltip.setAttribute('data-ez-tip-position', pref ?? 'top')
+    // still use the same data-position attribute
+    tooltip.setAttribute('data-position', fb);
 
     switch (fb) {
         case 'top':
-            anchorX = el;
+            anchorX = el + ew / 2;
             anchorY = et - gap;
             tx = -50; ty = -100;
             break;
@@ -257,10 +288,22 @@ function positionTooltip(
             break;
     }
 
-    tooltip.style.left = `${anchorX}px`;
-    tooltip.style.top = `${anchorY}px`;
-    tooltip.style.transform = `translate(${tx}%, ${ty}%)`;
+    if (!isHover && !isVisible) {
+        // always-visible & off-screen: no clamping
+        tooltip.style.left = `${anchorX}px`;
+        tooltip.style.top = `${anchorY}px`;
+        tooltip.style.transform = `translate(${tx}%, ${ty}%)`;
+        return;
+    }
+
+    // clamp fallback
+    const rawLeft = anchorX + (tx / 100) * tw;
+    const rawTop = anchorY + (ty / 100) * th;
+    tooltip.style.left = `${Math.min(Math.max(rawLeft, 0), window.innerWidth - tw)}px`;
+    tooltip.style.top = `${Math.min(Math.max(rawTop, 0), window.innerHeight - th)}px`;
+    tooltip.style.transform = `translate(0,0)`;
 }
+
 
 function debounce<F extends (...args: any[]) => void>(fn: F, wait = 100): F {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
