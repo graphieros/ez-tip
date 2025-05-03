@@ -51,6 +51,14 @@ function onRender({
 
         const tooltip = document.createElement('div');
         tooltip.classList.add('ez-tip');
+
+        if (target.dataset.ezTipClasses) {
+            const _classes = target.dataset.ezTipClasses.trim().split(' ');
+            _classes.forEach(_class => {
+                tooltip.classList.add(_class);
+            });
+        }
+
         tooltip.style.position = 'fixed';
         tooltip.style.pointerEvents = 'none';
 
