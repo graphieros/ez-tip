@@ -14,6 +14,7 @@ A lightweight, zero-dependency JavaScript tooltip library that uses CSS custom p
 - **Easy to integrate:** Just import the JS and call `render()`
 - **CSS variables for styling:** Customize colors, padding, radii, and offsets without touching the JS
 - **Configurable delay:** Set a show delay per-instance or globally
+- **Hover lock mode:** Can be configured to keep the tooltip open when it is hovered
 - **Smart positioning:** Automatically chooses the best placement (`top`, `bottom`, `left`, `right`) or honors your preference
 - **Auto-update:** Repositions on scroll/resize/element resize
 - **Auto-cleanup:** Removes tooltips when their target elements are removed from the DOM
@@ -179,6 +180,7 @@ config.borderRadius = "5px";
 | `data-ez-tip-color`         | string                        |         | Force text color for a single tooltip                                              |
 | `data-ez-tip-padding`       | string                        |         | Force padding for a single tooltip                                                 |
 | `data-ez-tip-border-radius` | string                        |         | Force border-radius for a single tooltip                                           |
+| `data-ez-tip-hover-lock`    | `true` or `false`             | `false` | If `true`, keeps the tooltip open when it is hovered                               |
 
 ```html
 <button

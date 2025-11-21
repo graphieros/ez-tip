@@ -26,10 +26,10 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         with a delay
       </button>
     </div>
-    <p id="p1" class="read-the-docs" data-ez-tip="my tooltip" data-ez-tip-hover="true">
+    <p id="p1" class="read-the-docs" data-ez-tip="my tooltip" data-ez-tip-hover-lock="true" data-ez-tip-hover="true">
       Without delay
     </p>
-    <p id="p1" class="read-the-docs" data-ez-tip-classes="multiple custom classes" data-ez-tip="my tooltip" data-ez-tip-hover="false" data-ez-tip-hover="true">
+    <p id="p1" class="read-the-docs" data-ez-tip-classes="multiple custom classes" data-ez-tip="my tooltip" data-ez-tip-hover="false">
       Permanent
     </p>
     <p data-ez-tip="Some long content">

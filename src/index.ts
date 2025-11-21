@@ -45,9 +45,16 @@ function onRender({
         let escHandler: (e: KeyboardEvent) => void;
 
         const isHover = target.dataset.ezTipHover !== 'false';
+        const isPersist = target.dataset.ezTipHoverLock === 'true';
+
+        const offset = Number(target.dataset.ezTipOffset || 8);
 
         const individualDelay = parseInt(target.dataset.ezTipDelay ?? '0', 10) || 0;
         let showTimeout: ReturnType<typeof setTimeout> | null = null;
+        let hideTimeout: ReturnType<typeof setTimeout> | null = null;
+
+        let isTargetHovered = false;
+        let isTooltipHovered = false;
 
         const tooltip = document.createElement('div');
         tooltip.classList.add('ez-tip');
@@ -60,7 +67,7 @@ function onRender({
         }
 
         tooltip.style.position = 'fixed';
-        tooltip.style.pointerEvents = 'none';
+        tooltip.style.pointerEvents = isHover && isPersist ? 'auto' : 'none';
 
         if (target.dataset.ezTipBackground) {
             tooltip.style.backgroundColor = target.dataset.ezTipBackground;
@@ -92,40 +99,131 @@ function onRender({
         function showTooltip() {
             positionTooltip(target, tooltip);
 
+            if (hideTimeout !== null) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+            }
+
+            if (showTimeout !== null) {
+                clearTimeout(showTimeout);
+            }
+
             showTimeout = setTimeout(() => {
                 tooltip.classList.add('ez-tip-visible');
                 tooltip.setAttribute('aria-hidden', 'false');
 
                 escHandler = (e: KeyboardEvent) => {
                     if (e.key === 'Escape') {
-                        hideTooltip();
+                        hideTooltip(true);
                     }
                 };
                 document.addEventListener('keydown', escHandler);
             }, individualDelay);
         }
 
-        function hideTooltip() {
+        function hideTooltip(forceImmediate = false) {
             if (showTimeout !== null) {
                 clearTimeout(showTimeout);
                 showTimeout = null;
             }
-            tooltip.classList.remove('ez-tip-visible');
-            tooltip.setAttribute('aria-hidden', 'true');
 
-            if (escHandler) {
-                document.removeEventListener('keydown', escHandler);
+            if (!isHover || !isPersist || forceImmediate) {
+                if (hideTimeout !== null) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+
+                tooltip.classList.remove('ez-tip-visible');
+                tooltip.setAttribute('aria-hidden', 'true');
+
+                if (escHandler) {
+                    document.removeEventListener('keydown', escHandler);
+                }
+                return;
             }
-        }
 
+            // Persist mode: delay scales with offset/bridge distance
+            if (hideTimeout !== null) {
+                clearTimeout(hideTimeout);
+            }
+
+            const bridgeDelay = Math.min(400, Math.max(80, offset * 10));
+
+            hideTimeout = setTimeout(() => {
+                if (!isTargetHovered && !isTooltipHovered) {
+                    tooltip.classList.remove('ez-tip-visible');
+                    tooltip.setAttribute('aria-hidden', 'true');
+
+                    if (escHandler) {
+                        document.removeEventListener('keydown', escHandler);
+                    }
+                }
+            }, bridgeDelay);
+        }
 
         if (isHover) {
             tooltip.classList.remove('ez-tip-visible');
-            target.addEventListener('mouseenter', showTooltip);
-            target.addEventListener('focus', showTooltip);
-            target.addEventListener('mouseleave', hideTooltip);
-            target.addEventListener('blur', hideTooltip);
 
+            // use mouseover/mouseout + relatedTarget guards so children don't trigger close
+            target.addEventListener('mouseover', () => {
+                isTargetHovered = true;
+                if (hideTimeout !== null) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+                showTooltip();
+            });
+
+            target.addEventListener('focus', () => {
+                isTargetHovered = true;
+                if (hideTimeout !== null) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+                showTooltip();
+            });
+
+            target.addEventListener('mouseout', (event: MouseEvent) => {
+                const related = event.relatedTarget as Node | null;
+
+                // if moving to a child of target or into the tooltip, do not treat as leaving
+                if (related && (target.contains(related) || tooltip.contains(related))) {
+                    return;
+                }
+
+                isTargetHovered = false;
+                hideTooltip();
+            });
+
+            target.addEventListener('blur', () => {
+                isTargetHovered = false;
+                hideTooltip(true);
+            });
+
+            if (isPersist) {
+                tooltip.addEventListener('mouseenter', () => {
+                    isTooltipHovered = true;
+                    if (hideTimeout !== null) {
+                        clearTimeout(hideTimeout);
+                        hideTimeout = null;
+                    }
+                });
+
+                tooltip.addEventListener('mouseleave', (event: MouseEvent) => {
+                    const related = event.relatedTarget as Node | null;
+
+                    // always clear the flag first so later checks are correct
+                    isTooltipHovered = false;
+
+                    // if moving back into the target, keep open and let target handlers take over
+                    if (related && target.contains(related)) {
+                        return;
+                    }
+
+                    // leaving the tooltip to anywhere else should close immediately
+                    hideTooltip(true);
+                });
+            }
         } else {
             tooltip.classList.add('ez-tip-visible');
         }
@@ -249,14 +347,12 @@ function positionTooltip(
 
         if ((fitsH && fitsV) || allowOverflowFix) {
             if (isHover || isVisible) {
-                // clamp within viewport
                 const clampedLeft = Math.min(Math.max(finalLeft, 0), window.innerWidth - tw);
                 const clampedTop = Math.min(Math.max(finalTop, 0), window.innerHeight - th);
                 tooltip.style.left = `${clampedLeft}px`;
                 tooltip.style.top = `${clampedTop}px`;
                 tooltip.style.transform = `translate(0,0)`;
             } else {
-                // always-visible & off-screen: no clamping
                 tooltip.style.left = `${anchorX}px`;
                 tooltip.style.top = `${anchorY}px`;
                 tooltip.style.transform = `translate(${tx}%, ${ty}%)`;
@@ -265,12 +361,10 @@ function positionTooltip(
         }
     }
 
-    // fallback: preferred position
     const fb = pref ?? 'top';
     let anchorX: number, anchorY: number;
     let tx = 0, ty = 0;
 
-    // still use the same data-position attribute
     tooltip.setAttribute('data-position', fb);
 
     switch (fb) {
@@ -297,21 +391,18 @@ function positionTooltip(
     }
 
     if (!isHover && !isVisible) {
-        // always-visible & off-screen: no clamping
         tooltip.style.left = `${anchorX}px`;
         tooltip.style.top = `${anchorY}px`;
         tooltip.style.transform = `translate(${tx}%, ${ty}%)`;
         return;
     }
 
-    // clamp fallback
     const rawLeft = anchorX + (tx / 100) * tw;
     const rawTop = anchorY + (ty / 100) * th;
     tooltip.style.left = `${Math.min(Math.max(rawLeft, 0), window.innerWidth - tw)}px`;
     tooltip.style.top = `${Math.min(Math.max(rawTop, 0), window.innerHeight - th)}px`;
     tooltip.style.transform = `translate(0,0)`;
 }
-
 
 function debounce<F extends (...args: any[]) => void>(fn: F, wait = 100): F {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
