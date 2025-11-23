@@ -2,7 +2,7 @@
   "name": "ez-tip",
   "homepage": "https://ez-tip.graphieros.com/",
   "private": false,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "A lightweight, zero-dependency JavaScript tooltip library that uses CSS custom properties for full styling flexibility. Tooltips can be triggered on hover or displayed permanently, with configurable delay, offset, and positioning.",
   "types": "dist/index.d.ts",
