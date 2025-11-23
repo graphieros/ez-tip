@@ -216,6 +216,16 @@ config.borderRadius = "5px";
 <p data-ez-tip="Persistent" data-ez-tip-hover="false">Persistent tooltip</p>
 ```
 
+### Hoverable tooltip
+
+If the content of your tooltip should be selectable, it is possible to lock it on hover:
+
+```html
+<p data-ez-tip="I'm locked on hover" data-ez-tip-hover-lock>
+  Hoverable tooltip
+</p>
+```
+
 ## Cleanup
 
 Tooltips auto-remove themselves if their target element is removed from the DOM—no memory leaks or orphan nodes.
