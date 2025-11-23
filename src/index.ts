@@ -23,11 +23,12 @@ export const config = {
 };
 
 export function render({ delay = 0 }: EzTipOptions = {}) {
-  if (document.readyState !== "loading") {
-    onRender({ delay });
-  } else {
-    window.addEventListener("DOMContentLoaded", () => onRender({ delay }));
-  }
+    if (typeof document === 'undefined') return;
+    if (document.readyState !== "loading") {
+        onRender({ delay });
+    } else {
+        window.addEventListener("DOMContentLoaded", () => onRender({ delay }));
+    }
 }
 
 function onRender({

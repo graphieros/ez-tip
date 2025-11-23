@@ -7,8 +7,6 @@ config.color = '#4A4A4A'
 config.padding = '0 0.5rem'
 config.borderRadius = '5px'
 
-render()
-
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
     <h1>ez-tip</h1>
@@ -48,3 +46,4 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </p>
   </div>
 `
+render();
