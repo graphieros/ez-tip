@@ -1,3 +1,5 @@
+<img width="200" height="74" alt="image" src="https://github.com/user-attachments/assets/e9608d7b-16d2-4908-9759-052c881bf8ce" />
+
 # ez-tip
 
 [![npm](https://img.shields.io/npm/v/ez-tip)](https://github.com/graphieros/ez-tip)
