@@ -72,7 +72,7 @@ function onRender({
         }
 
         tooltip.style.position = 'fixed';
-        tooltip.style.pointerEvents = isHover && isPersist ? 'auto' : 'none';
+        tooltip.style.pointerEvents = !isHover || isPersist ? 'auto' : 'none';
 
         if (target.dataset.ezTipBackground) {
             tooltip.style.backgroundColor = target.dataset.ezTipBackground;
