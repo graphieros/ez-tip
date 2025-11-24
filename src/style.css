@@ -1,3 +1,7 @@
+/*
+  THESE STYLES ARE USED ON THE TESTING ARENA (main.js)
+  THE LIB DOES NOT SHIP CSS
+*/
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -99,6 +103,26 @@ button:focus-visible {
 
 p {
   background: #FFFFFF10;
+  padding: 1rem;
+}
+
+.example-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.example {
+  width: fit-content;
+  height: 2rem;
+  background: #3A3A3A;
+  display: flex;
+  align-items:center;
+  justify-content:center;
   padding: 1rem;
 }
 
